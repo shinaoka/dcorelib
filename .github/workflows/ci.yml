@@ -3,8 +3,6 @@ on: [push]
 jobs:
   all-tests:
     runs-on: ubuntu-latest
-    container:
-      image: flatironinstitute/triqs
     steps:
       - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "This job is now running on a ${{ runner.os }} server hosted by GitHub!"
@@ -15,6 +13,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
       - run: python3 --version
+      - run: apt-get update
+      - run: apt-get install -y software-properties-common apt-transport-https curl
+      - run: curl -L https://users.flatironinstitute.org/~ccq/triqs3/focal/public.gpg | apt-key add -
+      - run: add-apt-repository "deb https://users.flatironinstitute.org/~ccq/triqs3/focal/ /" -y
+      - run: apt-get update
+      - run: DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends triqs triqs_dft_tools
       - run: pip3 install pytest
       - run: pip3 install .
       - name: List files in the repository
