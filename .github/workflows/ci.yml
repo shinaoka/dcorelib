@@ -10,19 +10,12 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
       - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
-      - name: Set up Python
-        uses: actions/setup-python@v2
-      - run: python3 --version
-      - run: apt-get update
-      - run: apt-get install -y software-properties-common apt-transport-https curl
-      - run: curl -L https://users.flatironinstitute.org/~ccq/triqs3/focal/public.gpg | apt-key add -
-      - run: add-apt-repository "deb https://users.flatironinstitute.org/~ccq/triqs3/focal/ /" -y
-      - run: apt-get update
-      - run: DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends triqs triqs_dft_tools
-      - run: pip3 install pytest
-      - run: pip3 install .
-      - name: List files in the repository
+      - name: pytest
         run: |
-          ls ${{ github.workspace }}
-      - run: py.test tests
+          export LOCAL_UID=$(id -u $USER)
+          export LOCAL_GID=$(id -g $USER)
+          echo "LOCAL_UID=${LOCAL_UID}" > .env
+          echo "LOCAL_GID=${LOCAL_GID}" >> .env
+          docker-compose up -d
+          docker-compose exec --user user -T dcorelib bash -c "whoami; pip3 install pytest; PATH=\$HOME/.local/bin:\$PATH; pip3 install .; pytest tests"
       - run: echo "This job's status is ${{ job.status }}."
