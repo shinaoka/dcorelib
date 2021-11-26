@@ -11,4 +11,4 @@ This library includes Python files originating from the following TRIQS librarie
 `dcorelib`, which depends only on standard scientific Python libraries such as numpy,
  is intended to provide a subset of the functionalities of these libraries.
 When you publish a scientific paper on results obtained by using `dcorelib`,
-we kindly ask to cite software papers on these TRIQS libraries.
+we kindly ask you to cite software papers on these TRIQS libraries.
