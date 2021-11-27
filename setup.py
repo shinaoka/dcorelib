@@ -52,6 +52,7 @@ setup(
         'scipy',
         'h5py',
         'mpmath',
+        'matplotlib',
         'irbasis3'
         ],
     extras_require={
