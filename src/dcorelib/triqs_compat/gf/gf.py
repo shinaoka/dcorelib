@@ -430,6 +430,9 @@ class GfImFreq(Gf):
         gbeta = tau_sampling(basis, sampling_points=[self._beta]).evaluate(gl, axis=0)
         return -gbeta[0,:,:].T
 
+    def total_density(self, basis=None):
+        return np.trace(self.density(basis))
+
 class GfImTime(Gf):
     def __init__(self, **kw): # enforce keyword only policy 
         if 'mesh' not in kw.keys() or kw['mesh'] is None:
