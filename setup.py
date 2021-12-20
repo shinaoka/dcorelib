@@ -53,18 +53,12 @@ setup(
         'h5py',
         'mpmath',
         'matplotlib',
-        'irbasis3'
+        'irbasis3>=3.0a6'
         ],
     extras_require={
         'dev': ['pytest', 'matplotlib'],
         },
 
-    setup_requires=[
-        'numpy',
-        'scipy',
-        'h5py',
-        'irbasis3'
-        ],
 
     package_dir={'': 'src'},
     packages=find_packages(where='src'),
