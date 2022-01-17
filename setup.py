@@ -53,6 +53,7 @@ setup(
         'h5py',
         'mpmath',
         'matplotlib',
+        'mpi4py',
         'irbasis3>=3.0a6'
         ],
     extras_require={

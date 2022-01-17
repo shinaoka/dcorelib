@@ -13,7 +13,7 @@ RUN apt-get update && \
     gosu \
     libopenblas-base libopenblas-dev libhdf5-103 libhdf5-dev \
     cmake pkg-config gfortran \
-    openmpi-bin \
+    openmpi-bin libopenmpi-dev \
     && \
     apt-get clean && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* # clean up
 
