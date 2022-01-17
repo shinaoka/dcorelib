@@ -20,7 +20,7 @@
 ##########################################################################
 from types import *
 import numpy
-from triqs.gf import *
+from ..gf import *
 from .. import mpi
 from .symmetry import *
 from .sumk_dft import SumkDFT

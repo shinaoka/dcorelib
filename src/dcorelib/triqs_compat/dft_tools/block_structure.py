@@ -1156,5 +1156,5 @@ class BlockStructure(object):
         s += str(self.transformation)
         return s
 
-from h5.formats import register_class
+from dcorelib.triqs_compat.h5.formats import register_class
 register_class(BlockStructure)

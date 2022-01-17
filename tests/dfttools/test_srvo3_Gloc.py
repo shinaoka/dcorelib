@@ -20,7 +20,7 @@
 ################################################################################
 
 import os
-from h5 import *
+from dcorelib.triqs_compat.h5 import *
 from dcorelib.triqs_compat.gf import *
 from dcorelib.triqs_compat.dft_tools.sumk_dft import *
 import dcorelib.triqs_compat.mpi
