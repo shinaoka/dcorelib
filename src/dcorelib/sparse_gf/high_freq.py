@@ -6,13 +6,13 @@ def evalulator_high_freq_moment(basis, n):
 
     Construct an evaluator for G_n:
         G(iv) \simeq \sum_{n=1}^N G_n/(iv)^n, where
-           G_n = (-1)^n (G^{n-1}(0^+) - G^{n-1}(0^-)).
+            G_n = (-1)^n (G^{n-1}(0^+) - G^{n-1}(0^-)).
 
     Attributes:
     -----------
-     - `basis` : IR Basis instance
-     - `n` : n (moment)
-    
+    - `basis` : IR Basis instance
+    - `n` : n (moment)
+
     Return a 1D numpy.ndarray of size N [P], where N is the size of the basis.
     The desired high-frequency moment is approximated by
         G_n \simeq sum_{l=0}^{N=1} P_l gl,
@@ -28,15 +28,15 @@ def high_freq_moment(gl, basis, num_moments, axis=0):
     """Compute high-frequency moments from IR coefficients of a Green's function
 
     G(iv) \simeq \sum_{n=1}^N G_n/(iv)^n, where
-       G_n = (-1)^n (G^{n-1}(0^+) - G^{n-1}(0^-)).
+        G_n = (-1)^n (G^{n-1}(0^+) - G^{n-1}(0^-)).
 
     Attributes:
     -----------
-     - `gl` : Expansion coefficients of Green's function in IR. Three-/one dimensional array.
-     - `basis` : IR Basis instance
-     - `num_moments` : Number of moments to be computed (>=1)
-     - `axis` : Axis of gl corresponding to IR 
-    
+    - `gl` : Expansion coefficients of Green's function in IR. Three-/one dimensional array.
+    - `basis` : IR Basis instance
+    - `num_moments` : Number of moments to be computed (>=1)
+    - `axis` : Axis of gl corresponding to IR 
+
     Return list `[G_1, G_2, ...]`,
     where G_n are the computed high-frequency moments (each of them is a numpy.ndarray instance).
     """

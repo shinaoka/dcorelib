@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from dcorelib.sparse_gf.basis import finite_temp_basis
 from dcorelib.triqs_compat.gf import *
-from dcorelib.triqs_compat.gf.gf import GfImTime
+from dcorelib.triqs_compat.gf.gf import GfImTime, make_zero_tail
 from dcorelib.triqs_compat.gf.tools import *
 from dcorelib.triqs_compat.h5 import HDFArchive as HDFArchive2
 
@@ -165,8 +165,22 @@ def test_tail_fit():
     giv << inverse(iOmega_n - h0)
 
     tail, _ = fit_hermitian_tail(giv, basis)
-    
     assert np.abs(h0 - tail[2]).max() < 1e+3*eps
+
+
+def test_density_with_tail():
+    beta = 10.0
+
+    h0 = np.array([[0]])
+    nf = h0.shape[0]
+    nw = 10000
+
+    giv = GfImFreq(beta=beta, n_points=nw, target_shape=(nf,nf))
+    giv << inverse(iOmega_n - h0)
+    tail = make_zero_tail(giv, 2)
+    # For now, tail is ignored.
+    assert np.abs(giv.total_density(tail) - 1/2) < 1e-4
+
 
 def test_gf_view():
     beta = 10.0

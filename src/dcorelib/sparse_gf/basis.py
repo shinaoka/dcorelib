@@ -17,7 +17,7 @@ class FiniteTempBasis(irbasis3.FiniteTempBasis):
     def __init__(self, kernel, statistics, beta, eps=None, sve_result=None):
         super().__init__(kernel, statistics, beta, eps=eps, sve_result=sve_result)
         self._eps = eps
-    
+ 
     @property
     def eps(self):
         return self._eps

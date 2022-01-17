@@ -2,6 +2,7 @@ from copy import deepcopy
 import numpy as np
 import h5py
 import operator
+from typing import List
 
 from dcorelib.sparse_gf.basis import matsubara_sampling, tau_sampling, finite_temp_basis
 
@@ -407,7 +408,7 @@ class GfImFreq(Gf):
             n_points=self.data.shape[0]//2,
             data=self.data.copy()
             )
-    
+
     @classmethod
     def from_triqs(cls, other):
         return cls(
@@ -421,8 +422,8 @@ class GfImFreq(Gf):
         inv_g = self.copy()
         inv_g.data[...] = np.linalg.inv(self.data)
         return inv_g
-    
-    def density(self, basis=None):
+
+    def density(self, tail=None, basis=None):
         if basis is None:
             basis = finite_temp_basis(self._beta, self._statistic)
         smpl = matsubara_sampling(basis, sampling_points=self.mesh.points)
@@ -430,11 +431,11 @@ class GfImFreq(Gf):
         gbeta = tau_sampling(basis, sampling_points=[self._beta]).evaluate(gl, axis=0)
         return -gbeta[0,:,:].T
 
-    def total_density(self, basis=None):
-        return np.trace(self.density(basis))
+    def total_density(self, tail=None, basis=None):
+        return np.trace(self.density(tail, basis))
 
 class GfImTime(Gf):
-    def __init__(self, **kw): # enforce keyword only policy 
+    def __init__(self, **kw): # enforce keyword only policy
         if 'mesh' not in kw.keys() or kw['mesh'] is None:
             mesh_type = MeshImTime
         super().__init__(**kw, mesh_type=mesh_type)
@@ -445,7 +446,7 @@ class GfImTime(Gf):
             return super().__lshift__(g)
         smpl = tau_sampling(g.basis, sampling_points=self.mesh.points)
         self.data[...] = smpl.evaluate(g.data, axis=0)
-    
+
 
 class GfReFreq(Gf):
     def __init__(self, **kw): # enforce keyword only policy 
@@ -463,7 +464,7 @@ class GfReFreq(Gf):
                 self.mesh.points[0], self.mesh.points[-1],
                 self.mesh.points.size)
             )
-    
+ 
     @classmethod
     def from_triqs(cls, other):
         points = np.array([p for p in other.mesh])
@@ -659,3 +660,19 @@ class SemiCircular(SpectralModel):
         return SemiCircular(self.D, other*self.coeff)
 
     __rmul__ = __mul__
+
+
+def make_zero_tail(g: GfImFreq, n_moments: int = 10) -> List[np.ndarray]:
+    """
+    Create a zero-initialized tail object for a given Green function object
+
+    g:
+        The Green function object to create the tail object for
+
+    n_moments:
+        The number of high-frequency moments to provide (including the zeroth moment)
+    """
+    assert isinstance(g, GfImFreq)
+    assert isinstance(n_moments, int) and n_moments >= 1
+    tail = [np.zeros(g.target_shape) for _ in range(n_moments)]
+    return tail
