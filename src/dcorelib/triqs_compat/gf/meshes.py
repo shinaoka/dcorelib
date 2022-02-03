@@ -69,7 +69,7 @@ class MeshReFreq(Mesh):
 
 class MeshImFreq(Mesh):
     """ Imaginary frequency mesh """
-    def __init__(self, beta, n_points=None, statistic=None, S=None, n_max=None):
+    def __init__(self, beta, statistic=None, n_points=None, S=None, n_max=None):
         """
 
         Args:
@@ -88,12 +88,13 @@ class MeshImFreq(Mesh):
             assert n_points is None
             n_points = n_max
         assert isinstance(statistic, str), type(statistic)
+        assert n_points is not None
         self._statistic = {'F': 'Fermion', 'B': 'Boson'}[statistic[0]]
         shift = 1 if self._statistic[0] == 'F' else 0
         self._points = 2*np.arange(-n_points, n_points) + shift
         self._values = 1J * (np.pi/self.beta) * self._points
 
-    
+
     @classmethod
     def n_points_fact(cls):
         return 2
