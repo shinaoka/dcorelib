@@ -1,6 +1,6 @@
 import numpy as np
 
-import irbasis3
+import sparse_ir
 from dcorelib.sparse_gf import high_freq
 import pytest
 
@@ -17,13 +17,13 @@ def test_high_freq_moments(statistics):
     lambda_ = 1e+3
     beta = 1e+2
     eps = 1e-7
-    basis = irbasis3.FiniteTempBasis(
-        irbasis3.KernelFFlat(lambda_),
-        statistics, beta, eps=eps
+    basis = sparse_ir.FiniteTempBasis(
+        statistics, beta, lambda_/beta, eps=eps,
+        kernel=sparse_ir.KernelFFlat(lambda_)
     )
     nf = 2
 
-    smpl = irbasis3.MatsubaraSampling(basis)
+    smpl = sparse_ir.MatsubaraSampling(basis)
     A = np.identity(2)
     e = 0.1
     assert lambda_/beta > e

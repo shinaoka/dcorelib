@@ -54,7 +54,7 @@ setup(
         'mpmath',
         'matplotlib',
         'mpi4py',
-        'irbasis3>=3.0a6'
+        'sparse_ir>=0.4.3'
         ],
     extras_require={
         'dev': ['pytest', 'matplotlib'],

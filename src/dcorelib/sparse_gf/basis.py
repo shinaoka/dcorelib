@@ -1,10 +1,10 @@
-import irbasis3
+import sparse_ir
 import numpy
 
 def _compute_sve(lambda_, eps):
     assert eps > 2e-8
-    return irbasis3.sve.compute(
-        irbasis3.KernelFFlat(lambda_ = lambda_),
+    return sparse_ir.sve.compute(
+        sparse_ir.KernelFFlat(lambda_ = lambda_),
         eps = eps, work_dtype = numpy.float64)
 
 
@@ -12,12 +12,12 @@ def _hash_array(x):
     """ Compute a hash of a ndarray object """
     return hash(x.data.tobytes())
 
-class FiniteTempBasis(irbasis3.FiniteTempBasis):
-    """ Wrap around irbasis3.FiniteTempBasis with additional meta info """
+class FiniteTempBasis(sparse_ir.FiniteTempBasis):
+    """ Wrap around sparse_ir.FiniteTempBasis with additional meta info """
     def __init__(self, kernel, statistics, beta, eps=None, sve_result=None):
         super().__init__(kernel, statistics, beta, eps=eps, sve_result=sve_result)
         self._eps = eps
- 
+
     @property
     def eps(self):
         return self._eps
@@ -45,8 +45,7 @@ def _tuple_key_basis(basis):
 
 def finite_temp_basis(beta, statistics, lambda_=1e+3, eps=1e-5, cache=_global_cache):
     """ Return a FiniteTempBasis object """
-    K = irbasis3.KernelFFlat(lambda_ = lambda_)
-    return FiniteTempBasis(K, statistics=statistics[0], beta=beta,
+    return FiniteTempBasis(statistics[0], beta, lambda_/beta,
         sve_result = sve(lambda_, eps, cache))
 
 
@@ -66,9 +65,9 @@ def _sampling(basis, cache_obj, compute_f, sampling_points):
 
 def tau_sampling(basis, sampling_points=None, cache=_global_cache):
     """ Return TauSampling object """
-    return _sampling(basis, cache.tau_sampling, irbasis3.TauSampling, sampling_points)
+    return _sampling(basis, cache.tau_sampling, sparse_ir.TauSampling, sampling_points)
 
 
 def matsubara_sampling(basis, sampling_points=None, cache=_global_cache):
     """ Return MatsubaraSampling object """
-    return _sampling(basis, cache.matsubara_sampling, irbasis3.MatsubaraSampling, sampling_points)
+    return _sampling(basis, cache.matsubara_sampling, sparse_ir.MatsubaraSampling, sampling_points)
