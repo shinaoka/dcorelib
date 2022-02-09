@@ -51,7 +51,6 @@ setup(
         'numpy',
         'scipy',
         'h5py',
-        'mpmath',
         'matplotlib',
         'mpi4py',
         'sparse_ir>=0.4.3'
