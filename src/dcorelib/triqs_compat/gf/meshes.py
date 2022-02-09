@@ -118,6 +118,9 @@ class MeshImFreq(Mesh):
     def values(self):
         return self._values
 
+    def positive_only(self):
+        return False
+
     @property
     def size(self):
         return self._points.size
