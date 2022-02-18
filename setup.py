@@ -53,7 +53,7 @@ setup(
         'h5py',
         'matplotlib',
         'mpi4py',
-        'sparse_ir>=0.4.3'
+        'sparse_ir>=0.6'
         ],
     extras_require={
         'dev': ['pytest', 'matplotlib'],

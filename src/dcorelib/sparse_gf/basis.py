@@ -4,7 +4,7 @@ import numpy
 def _compute_sve(lambda_, eps):
     assert eps > 2e-8
     return sparse_ir.sve.compute(
-        sparse_ir.KernelFFlat(lambda_ = lambda_),
+        sparse_ir.LogisticKernel(lambda_ = lambda_),
         eps = eps, work_dtype = numpy.float64)
 
 

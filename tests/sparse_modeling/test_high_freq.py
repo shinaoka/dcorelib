@@ -19,7 +19,7 @@ def test_high_freq_moments(statistics):
     eps = 1e-7
     basis = sparse_ir.FiniteTempBasis(
         statistics, beta, lambda_/beta, eps=eps,
-        kernel=sparse_ir.KernelFFlat(lambda_)
+        kernel=sparse_ir.LogisticKernel(lambda_)
     )
     nf = 2
 
