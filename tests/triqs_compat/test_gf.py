@@ -51,12 +51,31 @@ def test_gf():
     # triqs_compat can read the HDF5 file created by TRIQS?
     with HDFArchive2('gf_triqs.h5', 'r') as f:
         _ = f['gf']
-    
+
     # TRIQS can read the HDF5 file created by triqs_compat?
     with HDFArchive('gf_triqs_compat.h5', 'r') as f:
         _ = f['gf/mesh']
         _ = f['gf/indices']
         _ = f['gf']
+
+
+def test_legendre():
+    beta = 10.0
+    shape = (3,1)
+    nl = 10
+    nw = 500
+
+    data_l = np.ones((nl,) + shape, dtype=np.complex128)
+    data_w = np.empty((2*nw,) + shape, dtype=np.complex128)
+
+    gl = GfLegendre(beta=beta, data=data_l, n_points=nl)
+    giw = GfImFreq(beta=beta, data=data_w, n_points=nw)
+    legendre_to_matsubara(gl, giw)
+
+    data_w_ref = np.einsum('wl, lij->wij', compute_Tnl(2*np.arange(-nw, nw)+1, nl), data_l)
+
+    np.testing.assert_allclose(data_w, data_w_ref)
+
 
 
 @pytest.mark.skipif(not triqs_available, reason="TRIQS is not installed.")

@@ -1,7 +1,9 @@
 import numpy as np
+import scipy
 
 from .block_gf import BlockGf
 from .gf import GfImFreq, GfImTime, GfIR, iOmega_n, Identity
+from .meshes import MeshImFreq, MeshLegendre
 
 from dcorelib.sparse_gf.high_freq import high_freq_moment
 from dcorelib.sparse_gf.basis import tau_sampling, matsubara_sampling, finite_temp_basis
@@ -125,4 +127,43 @@ def dyson(Sigma_iw=None, G_iw=None, G0_iw=None):
         return (G_iw.inverse() + Sigma_iw).inverse()
     else:
         raise RuntimeError("Invalid arguments!")
-    
+
+
+def compute_Tnl(vsample, n_legendre):
+    """
+    Compute transformation matrix from Legendre to fermionic/bosonic Matsubara frequency
+    Implement Eq. (4.5) in the Boehnke's  Ph.D thesis
+    """
+    Tnl = np.zeros((vsample.size, n_legendre), dtype=np.complex128)
+    for idx_n, v in enumerate(vsample):
+        abs_v = abs(v)
+        sph_jn = np.array(
+            [scipy.special.spherical_jn(l, 0.5*abs_v*np.pi) for l in range(n_legendre)])
+        for il in range(n_legendre):
+            Tnl[idx_n, il] = (1J**(abs_v+il)) * np.sqrt(2*il + 1.0) * sph_jn[il]
+        if v < 0:
+            Tnl[idx_n, :] = Tnl[idx_n, :].conj()
+    return Tnl
+
+
+def _legendre_to_matsubara(gl, vsample):
+    v_unique, v_where = np.unique(vsample, return_inverse=True)
+    Tnl = compute_Tnl(v_unique, gl.shape[0])
+    return np.einsum('wl,l...->w...', Tnl, gl)[v_where, :]
+
+
+"""
+g : Green's function in Legendre basis
+nw: Number of non-negative frequencies
+gout: Green's function in Matsubara frequecy
+"""
+def legendre_to_matsubara(g, gout):
+    if not isinstance(g.mesh, MeshLegendre):
+        raise ValueError("g must be in Legendre basis!")
+    if not isinstance(gout.mesh, MeshImFreq):
+        raise ValueError("gout must be in Matsubara frequency!")
+    if not np.iscomplexobj(gout.data):
+        raise ValueError("gout.data must be a complex object!")
+
+    gout.data[:] = _legendre_to_matsubara(g.data, gout.mesh.points)
+
