@@ -576,7 +576,7 @@ class SumkDFT(object):
             G_latt << Omega + 1j * broadening
 
         idmat = [numpy.identity(
-            self.n_orbitals[ik, ntoi[sp]], numpy.complex_) for sp in spn]
+            self.n_orbitals[ik, ntoi[sp]], numpy.complex128) for sp in spn]
         M = copy.deepcopy(idmat)
 
         for ibl in range(self.n_spin_blocks[self.SO]):
@@ -930,7 +930,7 @@ class SumkDFT(object):
             for block, inner in self.gf_struct_solver[ish].items():
                 # get dm for the blocks:
                 dm[block] = numpy.zeros(
-                    [len(inner), len(inner)], numpy.complex_)
+                    [len(inner), len(inner)], numpy.complex128)
                 for ind1 in inner:
                     for ind2 in inner:
                         block_sumk, ind1_sumk = self.solver_to_sumk[
@@ -1277,7 +1277,7 @@ class SumkDFT(object):
                         """
                         def chi2(y):
                             # reinterpret y as complex number
-                            y = y.view(numpy.complex_)
+                            y = y.view(numpy.complex128)
                             ret = 0.0
                             for a in range(Z.shape[0]):
                                 for b in range(Z.shape[1]):
@@ -1294,10 +1294,10 @@ class SumkDFT(object):
                         if res.fun > threshold: continue
 
                         # reinterpret the solution as a complex number
-                        y = res.x.view(numpy.complex_)
+                        y = res.x.view(numpy.complex128)
 
                         # reconstruct the T matrix
-                        T = numpy.zeros(N.shape[:-1], dtype=numpy.complex_)
+                        T = numpy.zeros(N.shape[:-1], dtype=numpy.complex128)
                         for i in range(len(y)):
                             T += N[:, :, i] * y[i]
 
@@ -1467,7 +1467,7 @@ class SumkDFT(object):
         for icrsh in range(self.n_corr_shells):
             for sp in self.spin_block_names[self.corr_shells[icrsh]['SO']]:
                 dens_mat[icrsh][sp] = numpy.zeros(
-                    [self.corr_shells[icrsh]['dim'], self.corr_shells[icrsh]['dim']], numpy.complex_)
+                    [self.corr_shells[icrsh]['dim'], self.corr_shells[icrsh]['dim']], numpy.complex128)
 
         ikarray = numpy.array(list(range(self.n_k)))
         for ik in mpi.slice_array(ikarray):
@@ -1485,7 +1485,7 @@ class SumkDFT(object):
                 ntoi = self.spin_names_to_ind[self.SO]
                 spn = self.spin_block_names[self.SO]
                 dims = {sp:self.n_orbitals[ik, ntoi[sp]] for sp in spn}
-                MMat = [numpy.zeros([dims[sp], dims[sp]], numpy.complex_) for sp in spn]
+                MMat = [numpy.zeros([dims[sp], dims[sp]], numpy.complex128) for sp in spn]
 
                 for isp, sp in enumerate(spn):
                     ind = ntoi[sp]
@@ -1566,7 +1566,7 @@ class SumkDFT(object):
         for ish in range(self.n_inequiv_shells):
             for sp in self.spin_block_names[self.corr_shells[self.inequiv_to_corr[ish]]['SO']]:
                 eff_atlevels[ish][sp] = numpy.identity(
-                    self.corr_shells[self.inequiv_to_corr[ish]]['dim'], numpy.complex_)
+                    self.corr_shells[self.inequiv_to_corr[ish]]['dim'], numpy.complex128)
                 eff_atlevels[ish][sp] *= -self.chemical_potential
                 eff_atlevels[ish][
                     sp] -= self.dc_imp[self.inequiv_to_corr[ish]][sp]
@@ -1580,13 +1580,13 @@ class SumkDFT(object):
                 dim = self.corr_shells[icrsh]['dim']
                 for sp in self.spin_block_names[self.corr_shells[icrsh]['SO']]:
                     self.Hsumk[icrsh][sp] = numpy.zeros(
-                        [dim, dim], numpy.complex_)
+                        [dim, dim], numpy.complex128)
                 for isp, sp in enumerate(self.spin_block_names[self.corr_shells[icrsh]['SO']]):
                     ind = self.spin_names_to_ind[
                         self.corr_shells[icrsh]['SO']][sp]
                     for ik in range(self.n_k):
                         n_orb = self.n_orbitals[ik, ind]
-                        MMat = numpy.identity(n_orb, numpy.complex_)
+                        MMat = numpy.identity(n_orb, numpy.complex128)
                         MMat = self.hopping[
                             ik, ind, 0:n_orb, 0:n_orb] - (1 - 2 * isp) * self.h_field * MMat
                         projmat = self.proj_mat[ik, ind, icrsh, 0:dim, 0:n_orb]
@@ -1628,7 +1628,7 @@ class SumkDFT(object):
             dim = self.corr_shells[icrsh]['dim']
             spn = self.spin_block_names[self.corr_shells[icrsh]['SO']]
             for sp in spn:
-                self.dc_imp[icrsh][sp] = numpy.zeros([dim, dim], numpy.float_)
+                self.dc_imp[icrsh][sp] = numpy.zeros([dim, dim], numpy.float64)
         self.dc_energ = [0.0 for icrsh in range(self.n_corr_shells)]
 
     def set_dc(self, dc_imp, dc_energ):
@@ -1706,7 +1706,7 @@ class SumkDFT(object):
                 Ncr[bl] += dens_mat[block].real.trace()
             Ncrtot = sum(Ncr.values())
             for sp in spn:
-                self.dc_imp[icrsh][sp] = numpy.identity(dim, numpy.float_)
+                self.dc_imp[icrsh][sp] = numpy.identity(dim, numpy.float64)
                 if self.SP == 0:  # average the densities if there is no SP:
                     Ncr[sp] = Ncrtot / len(spn)
                 # correction for SO: we have only one block in this case, but
@@ -2023,14 +2023,14 @@ class SumkDFT(object):
 # Convert Fermi weights to a density matrix
             dens_mat_dft = {}
             for sp in spn:
-                dens_mat_dft[sp] = [fermi_weights[ik, ntoi[sp], :].astype(numpy.complex_) for ik in range(self.n_k)]
+                dens_mat_dft[sp] = [fermi_weights[ik, ntoi[sp], :].astype(numpy.complex128) for ik in range(self.n_k)]
 
 
         # Set up deltaN:
         deltaN = {}
         for sp in spn:
             deltaN[sp] = [numpy.zeros([self.n_orbitals[ik, ntoi[sp]], self.n_orbitals[
-                                      ik, ntoi[sp]]], numpy.complex_) for ik in range(self.n_k)]
+                                      ik, ntoi[sp]]], numpy.complex128) for ik in range(self.n_k)]
 
         ikarray = numpy.array(list(range(self.n_k)))
         for ik in mpi.slice_array(ikarray):
@@ -2202,7 +2202,7 @@ class SumkDFT(object):
     def check_projectors(self):
         """Calculated the density matrix from projectors (DM = P Pdagger) to check that it is correct and
            specifically that it matches DFT."""
-        dens_mat = [numpy.zeros([self.corr_shells[icrsh]['dim'], self.corr_shells[icrsh]['dim']], numpy.complex_)
+        dens_mat = [numpy.zeros([self.corr_shells[icrsh]['dim'], self.corr_shells[icrsh]['dim']], numpy.complex128)
                     for icrsh in range(self.n_corr_shells)]
 
         for ik in range(self.n_k):
