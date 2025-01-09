@@ -16,6 +16,6 @@ jobs:
           export LOCAL_GID=$(id -g $USER)
           echo "LOCAL_UID=${LOCAL_UID}" > .env
           echo "LOCAL_GID=${LOCAL_GID}" >> .env
-          docker-compose up -d
-          docker-compose exec --user user -T dcorelib bash -c "whoami; pip3 install pytest; PATH=\$HOME/.local/bin:\$PATH; pip3 install .; pytest tests"
+          docker compose up -d
+          docker compose exec --user user -T dcorelib bash -c "whoami; pip3 install pytest; PATH=\$HOME/.local/bin:\$PATH; pip3 install .; pytest tests"
       - run: echo "This job's status is ${{ job.status }}."
