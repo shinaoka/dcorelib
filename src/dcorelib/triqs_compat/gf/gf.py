@@ -478,7 +478,7 @@ class GfReFreq(Gf):
         from ..utility.pade_approximants import PadeApproximant
         N = gm.data.shape[1]
         nw = gm.data.shape[0]//2
-        idx = range(nw-n_points, nw+n_points)
+        idx = range(nw, nw+n_points)
         z = gm.mesh.values()[idx]
         for i in range(N):
             for j in range(N):

@@ -5,17 +5,17 @@ import numpy as np
 class PadeApproximant(object):
     def __init__(self, z_in, u_in):
         N = z_in.size
-        self._z_in = z_in
+        self._z_in = z_in.astype(np.complex128)
         self._a = np.zeros(N, dtype=np.complex128)
 
         # Change the default precision of GMP floats.
-        g = np.empty((N, N), dtype=np.complex128)
-        g[:,:] = 0.0
+        g = np.zeros((N, N), dtype=np.complex128)
         g[0, :] = u_in
 
         for p in range(1,N):
             # If |g| is very small, the continued fraction should be truncated.
-            if (np.abs(g[p - 1, p - 1]) < 1.0e-20): break
+            if (g[p - 1, p - 1].real**2 + g[p - 1, p - 1].imag**2 < 1.0e-20):
+                break
 
             for j in range(p, N):
                 x = g[p - 1, p - 1] / g[p - 1, j] - 1.
@@ -39,7 +39,7 @@ class PadeApproximant(object):
         nvec = evec.size
         A1 = np.zeros(nvec, dtype=np.complex128)
         A2 = np.full(nvec, self._a[0])
-        B1 = np.ones(nvec)
+        B1 = np.ones(nvec, dtype=np.complex128)
         N = self._a.size
         for i in range(N - 1):
             Anew = A2 + (evec - self._z_in[i]) * self._a[i + 1] * A1
