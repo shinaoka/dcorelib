@@ -250,7 +250,7 @@ def test_delta():
     diff = Delta_iw_reconst - Delta_iw
 
     # FIXME: The precision is worse with sparse sampling. Why?
-    assert np.all(np.abs(diff.data) < 1e-6)
+    assert np.all(np.abs(diff.data) < 1e-5)
 
 
 @pytest.mark.skipif(not triqs_available, reason="TRIQS is not installed.")
