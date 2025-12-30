@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dcorelib"
-dynamic = ["version"]
+version = "1.0.0"
 description = "Backend of DMFT software for correlated electrons"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -44,9 +44,6 @@ dev = [
 test = [
     "pytest",
 ]
-
-[tool.setuptools.dynamic]
-version = { attr = "dcorelib.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["src"]

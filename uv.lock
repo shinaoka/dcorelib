@@ -181,6 +181,7 @@ wheels = [
 
 [[package]]
 name = "dcorelib"
+version = "1.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "h5py" },
