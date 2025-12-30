@@ -1,0 +1,56 @@
+[build-system]
+requires = [
+    "setuptools>=70.0",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dcorelib"
+dynamic = ["version"]
+description = "Backend of DMFT software for correlated electrons"
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["condensed-matter", "dmft"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "h5py",
+    "matplotlib",
+    "mpi4py",
+    "sparse_ir>=2.1.1",
+]
+authors = [
+    { name = "H. Shinaoka", email = "h.shinaoka@gmail.com" },
+]
+urls = { "Homepage" = "https://github.com/shinaoka/dcorelib" }
+
+[project.optional-dependencies]
+dev = ["pytest", "matplotlib"]
+test = ["pytest"]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "matplotlib",
+]
+test = [
+    "pytest",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "dcorelib.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
